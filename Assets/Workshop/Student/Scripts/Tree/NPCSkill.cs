@@ -8,7 +8,7 @@ public class NPCSkill : Identity
 
     public override bool Hit()
     {
-        // ตรวจสอบว่าผู้เล่นมีไอเท็มที่ต้องการหรือไม่
+        // ตรวจสอบว่าผู้เล่นมีไอเทมที่ต้องการหรือไม่
         if (canTalk)
         {
             Debug.Log("NPCSkill");

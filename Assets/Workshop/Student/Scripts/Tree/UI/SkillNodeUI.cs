@@ -1,18 +1,19 @@
-using UnityEngine;
+๏ปฟusing UnityEngine;
 using UnityEngine.UI;
-using TMPro; // ใช้สำหรับ TextMeshPro ถ้าคุณใช้องค์ประกอบนี้
+using TMPro; // ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝับ TextMeshPro
+
 public class SkillNodeUI : MonoBehaviour
 {
-    // อ้างอิงถึง Component UI
+    // ๏ฟฝ๏ฟฝาง๏ฟฝิง๏ฟฝึง Component UI
     [Header("UI References")]
     public Button button;
     public Image background;
-    public TextMeshProUGUI skillNameText; // หรือ public Text skillNameText; ถ้าไม่ใช้ TMP
+    public TextMeshProUGUI skillNameText; // ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ public Text skillNameText;
 
-    // อ้างอิงถึงข้อมูล Skill
+    // ๏ฟฝ๏ฟฝาง๏ฟฝิง๏ฟฝึง๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ Skill
     [HideInInspector] public Skill skillData;
 
-    // สถานะสี (กำหนดสีเหล่านี้ใน Inspector)
+    // สถาน๏ฟฝ๏ฟฝ๏ฟฝ (๏ฟฝ๏ฟฝหน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาน๏ฟฝ๏ฟฝ๏ฟฝ Inspector)
     [Header("Colors")]
     public Color colorLearned = Color.yellow;
     public Color colorAvailable = Color.green;
@@ -21,43 +22,48 @@ public class SkillNodeUI : MonoBehaviour
     public void Initialize(Skill skill)
     {
         this.skillData = skill;
-        skillNameText.text = skill.name; // หรือ skill.Name; ขึ้นอยู่กับ Skill class
+        skillNameText.text = skill.name;
 
+        // ๏ฟฝ๏ฟฝาง Listener ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝอก๏ฟฝ๏ฟฝอน ๏ฟฝ๏ฟฝ๏ฟฝอป๏ฟฝอง๏ฟฝัน๏ฟฝ๏ฟฝรทำงาน๏ฟฝ๏ฟฝำซ๏ฟฝอน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ UI
+        button.onClick.RemoveAllListeners();
         button.onClick.AddListener(OnNodeClicked);
+
         UpdateUI();
     }
 
     public void UpdateUI()
     {
-        // ต้องมี property isLearned ในคลาส Skill เพื่อระบุสถานะปลดล็อค
-        // สมมติ: skillData.IsLearned เป็น true เมื่อถูก Unlock
+        if (skillData == null) return;
 
-        if (skillData.isUnlocked) // ถ้า Skill ถูกเรียนรู้แล้ว (Learned)
+        if (skillData.isUnlocked) // ๏ฟฝ๏ฟฝ๏ฟฝ Skill ๏ฟฝูก๏ฟฝ๏ฟฝ๏ฟฝยน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ (Learned)
         {
             background.color = colorLearned;
-            button.interactable = false; // คลิกอีกไม่ได้
+            button.interactable = false; // ๏ฟฝ๏ฟฝิก๏ฟฝีก๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ
         }
-        else if (skillData.isAvailable) // ถ้า Skill ปลดล็อคให้เรียนรู้ได้ (Available)
+        else if (skillData.isAvailable) // ๏ฟฝ๏ฟฝ๏ฟฝ Skill ๏ฟฝลด๏ฟฝ๏ฟฝอค๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ (Available)
         {
             background.color = colorAvailable;
-            button.interactable = true; // คลิกเพื่อเรียนรู้
+            button.interactable = true; // ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน๏ฟฝ๏ฟฝ๏ฟฝ
         }
-        else // ถ้า Skill ยังถูกล็อค (Locked)
+        else // ๏ฟฝ๏ฟฝ๏ฟฝ Skill ๏ฟฝัง๏ฟฝูก๏ฟฝ๏ฟฝอค (Locked)
         {
             background.color = colorLocked;
-            button.interactable = false; // คลิกไม่ได้
+            button.interactable = false; // ๏ฟฝ๏ฟฝิก๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ
         }
     }
 
     private void OnNodeClicked()
     {
-        if (skillData.isAvailable && !skillData.isUnlocked)
+        if (skillData != null && skillData.isAvailable && !skillData.isUnlocked)
         {
-            // เรียกเมธอด Unlock() ในคลาส Skill
+            // ๏ฟฝ๏ฟฝ๏ฟฝยก๏ฟฝ๏ฟฝ๏ฟฝอด Unlock() ในค๏ฟฝ๏ฟฝ๏ฟฝ Skill
             skillData.Unlock();
 
-            // แจ้งให้ UI ทุกตัวอัปเดตสถานะ (ถ้ามี)
-            SkillTreeUI.Instance.RefreshAllUI();
+            // ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ UI ๏ฟฝุก๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝัปเดตสถาน๏ฟฝ
+            if (SkillTreeUI.Instance != null)
+            {
+                SkillTreeUI.Instance.RefreshAllUI();
+            }
         }
     }
 }

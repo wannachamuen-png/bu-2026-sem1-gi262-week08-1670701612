@@ -1,113 +1,98 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace Assignment
+public class DialogueSequen : MonoBehaviour
 {
-    public class StudentSolution
+    public DialogueTree tree;
+    public DialogueNode currentNode;
+    public DialogueUI dialogueUI;
+
+    public void Start()
     {
-        #region Lecture
+        // 1. สร้างและตั้งค่า Dialogue Tree / call LoadConversation() to set up the dialogue tree
+        LoadConversations();
 
-        public int LCT01_RecursiveFactorial(int n)
+        // ดึง DialogueUI จาก NPC Component (กรณีที่ยังไม่ได้ลากใส่ใน Inspector)
+        if (dialogueUI == null)
         {
-            return Factorial(n);
+            NPC npc = GetComponent<NPC>();
+            if (npc != null)
+            {
+                dialogueUI = npc.dialogueUI;
+            }
         }
 
-        private int Factorial(int n)
+        // 2. กำหนด Current Node ให้เป็น Root ของ Tree
+        if (tree != null)
         {
-            // base case
-
-            // recursive case
-
-            return -1;
+            currentNode = tree.root;
+            // currentNode.Print(); // ปลดคอมเมนต์บรรทัดนี้ถ้าใน DialogueNode มีเมธอด Print()
         }
+    }
 
-        public int LCT02_RecursiveFibonacci(int n)
+    private void LoadConversations()
+    {
+        // 3. Create the dialogue nodes
+        DialogueNode greeting = new DialogueNode("Ah, traveler! What brings you to this old place?");
+        DialogueNode askForQuest = new DialogueNode("I have a task for you. There’s a beast in the woods. Can you take care of it?");
+        DialogueNode questDenied = new DialogueNode("You're not ready for this yet. Come back when you're stronger.");
+        DialogueNode directionsVillage = new DialogueNode("Follow the road south, and you’ll reach the village.");
+        DialogueNode directionsForest = new DialogueNode("Head west, into the forest. But beware, it's dangerous.");
+        DialogueNode goodbye = new DialogueNode("Safe travels, adventurer.");
+        DialogueNode noIdea = new DialogueNode("I'm afraid I can't help you with that.");
+
+        // Build the tree, adding custom responses
+        // [1] add greeting's next node: askForQuest
+        greeting.AddNext(askForQuest, "Can you give me a quest?");
+
+
+        // [2] add greeting's next node: directionsVillage
+        greeting.AddNext(directionsVillage, "Where is the village?");
+
+        // [3] add greeting's next node: directionsForest
+        greeting.AddNext(directionsForest, "How do I get to the forest?");
+
+        // [4] add greeting's next node: goodbye
+        greeting.AddNext(goodbye, "Goodbye.");
+
+        // [5] add askForQuest's next node: questDenied
+        askForQuest.AddNext(questDenied, "I’m ready for anything!");
+
+        // [6] add askForQuest's next node: goodbye
+        askForQuest.AddNext(goodbye, "Maybe later.");
+        // 5. Set up the root of the dialogue tree
+        tree = new DialogueTree(greeting);
+    }
+
+    // เมธอดสำหรับรับการเลือกจากปุ่ม UI
+    public void SelectChoice(int index)
+    {
+        if (currentNode == null || currentNode.nexts == null) return;
+
+        var choiceTextKeys = new List<string>(currentNode.nexts.Keys);
+
+        if (index >= 0 && index < choiceTextKeys.Count)
         {
-            return Fibonacci(n);
+            string choiceKey = choiceTextKeys[index];
+
+            // 1. เลื่อนไปยัง Dialogue Node ถัดไป
+            currentNode = currentNode.nexts[choiceKey];
+
+            // 2. ตรวจสอบว่ามีตัวเลือกถัดไปหรือไม่
+            if (dialogueUI != null)
+            {
+                if (currentNode.nexts.Count > 0)
+                {
+                    dialogueUI.ShowDialogue(currentNode); // แสดง Node ถัดไป
+                }
+                else
+                {
+                    // ถ้าไม่มีตัวเลือกถัดไป ถือว่าจบบทสนทนา
+                    dialogueUI.ShowDialogue(currentNode);   // แสดงข้อความสุดท้าย
+                    dialogueUI.ShowCloseButtonDialog();     // แสดงปุ่มปิด
+                }
+            }
         }
-
-        private int Fibonacci(int n)
-        {
-            // base case
-
-            // recursive case
-
-            return -1;
-        }
-
-        public int LCT03_RecursiveSumOfOneToN(int n)
-        {
-            return SumOfOneToN(n);
-        }
-
-        private int SumOfOneToN(int n)
-        {
-            // base case
-
-            // recursive case
-
-            return -1;
-        }
-
-        public int LCT04_RecursiveSumOfNumbers(int[] numbers)
-        {
-            return SumOfNumbers(numbers, 0);
-        }
-
-        private int SumOfNumbers(int[] numbers, int index)
-        {
-            // base case
-
-            // recursive case
-
-            return -1;
-        }
-
-        #endregion
-
-        #region Assignment
-
-        public int ASN01_RecursivePower(int baseNum, int exponent)
-        {
-            return Power(baseNum, exponent);
-        }
-
-        private int Power(int baseNum, int exponent)
-        {
-            return -1;
-        }
-
-        public bool ASN02_IsPalindrome(string str)
-        {
-            return IsPalindrome(str, 0, str.Length - 1);
-        }
-
-        private bool IsPalindrome(string str, int start, int end)
-        {
-            return false;
-        }
-
-        public int ASN03_RecursiveGCD(int a, int b)
-        {
-            return GCD(a, b);
-        }
-
-        private int GCD(int a, int b)
-        {
-            return -1;
-        }
-
-        public int ASN04_RecursiveBinarySearch(int[] arr, int target)
-        {
-            return BinarySearch(arr, target, 0, arr.Length - 1);
-        }
-
-        private int BinarySearch(int[] arr, int target, int low, int high)
-        {
-            return -1;
-        }
-
-        #endregion
-
     }
 }
