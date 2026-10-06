@@ -33,7 +33,7 @@ namespace Solution
 
 
             mapGenerator.mapdata[positionX, positionY] = null;
-            
+
             mapGenerator.player.UpdatePosition(positionX, positionY);
             Destroy(gameObject);
             return true;
