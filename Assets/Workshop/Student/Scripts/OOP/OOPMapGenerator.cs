@@ -77,7 +77,8 @@ namespace Solution
         {
             StartCoroutine(SetUPMap());
         }
-        IEnumerator SetUPMap() {
+        IEnumerator SetUPMap()
+        {
             SetUpPlayer();
             SetUpExit();
             SetUpNpc();
@@ -166,14 +167,15 @@ namespace Solution
 
         public Identity GetMapData(float x, float y)
         {
-            if (x >= X || x < 0 || y >= Y || y < 0) {
+            if (x >= X || x < 0 || y >= Y || y < 0)
+            {
                 return Wall;
             }
 
             return mapdata[(int)x, (int)y];
         }
 
-        public void SetUpItem(int x, int y,GameObject[] _itemsPrefab,Transform parrent,string _name)
+        public void SetUpItem(int x, int y, GameObject[] _itemsPrefab, Transform parrent, string _name)
         {
             int r = Random.Range(0, _itemsPrefab.Length);
             GameObject obj = Instantiate(_itemsPrefab[r], new Vector3(x, y, 0), Quaternion.identity);
@@ -182,10 +184,12 @@ namespace Solution
             mapdata[x, y].positionX = x;
             mapdata[x, y].positionY = y;
             mapdata[x, y].mapGenerator = this;
-            if (_name != collectItem) {
+            if (_name != collectItem)
+            {
                 mapdata[x, y].Name = _name;
             }
-            if (_name == enemy) {
+            if (_name == enemy)
+            {
                 EnemysOnMap.Add(obj.GetComponent<OOPEnemy>());
             }
             obj.name = $"Object_{mapdata[x, y].Name} {x}, {y}";
@@ -219,7 +223,8 @@ namespace Solution
                 enemy.RandomMove();
             }
         }
-        public void RandomDamageToListEnemies() {
+        public void RandomDamageToListEnemies()
+        {
             Debug.Log($"Damage to {EnemysOnMap.Count} EnemysOnMap");
             foreach (var enemy in EnemysOnMap)
             {

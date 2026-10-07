@@ -1,35 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Solution
 {
-
     public class OOPWall : Identity
     {
         public int Damage;
         public bool IsIceWall;
 
-        private void Start()
+        private SpriteRenderer spriteRenderer;
+
+        private void Awake()
         {
-            IsIceWall = Random.Range(0, 100) < 20 ? true : false;
-            if (IsIceWall)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            IsIceWall = Random.Range(0, 100) < 20;
+
+            if (IsIceWall && spriteRenderer != null)
             {
-                GetComponent<SpriteRenderer>().color = Color.blue;
+                spriteRenderer.color = Color.blue;
             }
         }
+
         public override bool Hit()
         {
+            if (mapGenerator == null)
+            {
+                Debug.LogError("OOPWall: mapGenerator is not assigned.", this);
+                return false;
+            }
+
+            if (mapGenerator.player == null)
+            {
+                Debug.LogError("OOPWall: mapGenerator.player is not assigned.", this);
+                return false;
+            }
+
             if (IsIceWall)
             {
-                mapGenerator.player.TakeDamage(Damage, IsIceWall);
+                mapGenerator.player.TakeDamage(Damage, true);
             }
             else
             {
                 mapGenerator.player.TakeDamage(Damage);
             }
-            mapGenerator.mapdata[positionX, positionY] = null;
+
+            if (positionX >= 0 && positionX < mapGenerator.X &&
+                positionY >= 0 && positionY < mapGenerator.Y)
+            {
+                mapGenerator.mapdata[positionX, positionY] = null;
+            }
+
             Destroy(gameObject);
             return false;
         }
