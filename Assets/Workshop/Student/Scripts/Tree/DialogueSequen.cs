@@ -6,7 +6,7 @@ public class DialogueSequen : MonoBehaviour
 {
     public DialogueTree tree;
     public DialogueNode currentNode;
-    DialogueUI dialogueUI;
+    public DialogueUI dialogueUI;
 
     public void Start()
     {
