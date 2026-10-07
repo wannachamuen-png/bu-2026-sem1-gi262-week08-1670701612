@@ -1,19 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // ������Ѻ TextMeshPro
-
+using TMPro; // ãªéÊÓËÃÑº TextMeshPro ¶éÒ¤Ø³ãªéÍ§¤ì»ÃÐ¡Íº¹Õé
 public class SkillNodeUI : MonoBehaviour
 {
-    // ��ҧ�ԧ�֧ Component UI
+    // ÍéÒ§ÍÔ§¶Ö§ Component UI
     [Header("UI References")]
     public Button button;
     public Image background;
-    public TextMeshProUGUI skillNameText; // ���� public Text skillNameText;
+    public TextMeshProUGUI skillNameText; // ËÃ×Í public Text skillNameText; ¶éÒäÁèãªé TMP
 
-    // ��ҧ�ԧ�֧������ Skill
+    // ÍéÒ§ÍÔ§¶Ö§¢éÍÁÙÅ Skill
     [HideInInspector] public Skill skillData;
 
-    // ʶҹ��� (��˹�������ҹ��� Inspector)
+    // Ê¶Ò¹ÐÊÕ (¡ÓË¹´ÊÕàËÅèÒ¹Õéã¹ Inspector)
     [Header("Colors")]
     public Color colorLearned = Color.yellow;
     public Color colorAvailable = Color.green;
@@ -22,48 +21,43 @@ public class SkillNodeUI : MonoBehaviour
     public void Initialize(Skill skill)
     {
         this.skillData = skill;
-        skillNameText.text = skill.name;
+        skillNameText.text = skill.name; // ËÃ×Í skill.Name; ¢Öé¹ÍÂÙè¡Ñº Skill class
 
-        // ��ҧ Listener ����͡��͹ ���ͻ�ͧ�ѹ��÷ӧҹ��ӫ�͹�������� UI
-        button.onClick.RemoveAllListeners();
         button.onClick.AddListener(OnNodeClicked);
-
         UpdateUI();
     }
 
     public void UpdateUI()
     {
-        if (skillData == null) return;
+        // µéÍ§ÁÕ property isLearned ã¹¤ÅÒÊ Skill à¾×èÍÃÐºØÊ¶Ò¹Ð»Å´ÅçÍ¤
+        // ÊÁÁµÔ: skillData.IsLearned à»ç¹ true àÁ×èÍ¶Ù¡ Unlock
 
-        if (skillData.isUnlocked) // ��� Skill �١���¹������� (Learned)
+        if (skillData.isUnlocked) // ¶éÒ Skill ¶Ù¡àÃÕÂ¹ÃÙéáÅéÇ (Learned)
         {
             background.color = colorLearned;
-            button.interactable = false; // ��ԡ�ա�����
+            button.interactable = false; // ¤ÅÔ¡ÍÕ¡äÁèä´é
         }
-        else if (skillData.isAvailable) // ��� Skill �Ŵ��ͤ������¹����� (Available)
+        else if (skillData.isAvailable) // ¶éÒ Skill »Å´ÅçÍ¤ãËéàÃÕÂ¹ÃÙéä´é (Available)
         {
             background.color = colorAvailable;
-            button.interactable = true; // ��ԡ�������¹���
+            button.interactable = true; // ¤ÅÔ¡à¾×èÍàÃÕÂ¹ÃÙé
         }
-        else // ��� Skill �ѧ�١��ͤ (Locked)
+        else // ¶éÒ Skill ÂÑ§¶Ù¡ÅçÍ¤ (Locked)
         {
             background.color = colorLocked;
-            button.interactable = false; // ��ԡ�����
+            button.interactable = false; // ¤ÅÔ¡äÁèä´é
         }
     }
 
     private void OnNodeClicked()
     {
-        if (skillData != null && skillData.isAvailable && !skillData.isUnlocked)
+        if (skillData.isAvailable && !skillData.isUnlocked)
         {
-            // ���¡���ʹ Unlock() 㹤��� Skill
+            // àÃÕÂ¡àÁ¸Í´ Unlock() ã¹¤ÅÒÊ Skill
             skillData.Unlock();
 
-            // ����� UI �ء����ѻവʶҹ�
-            if (SkillTreeUI.Instance != null)
-            {
-                SkillTreeUI.Instance.RefreshAllUI();
-            }
+            // á¨é§ãËé UI ·Ø¡µÑÇÍÑ»à´µÊ¶Ò¹Ð (¶éÒÁÕ)
+            SkillTreeUI.Instance.RefreshAllUI();
         }
     }
 }
